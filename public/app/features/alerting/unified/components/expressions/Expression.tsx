@@ -35,7 +35,7 @@ import { Spacer } from '../Spacer';
 import { AlertStateTag } from '../rules/AlertStateTag';
 
 import { ExpressionStatusIndicator } from './ExpressionStatusIndicator';
-import { formatLabels, getSeriesLabels, getSeriesName, getSeriesValue, isEmptySeries } from './util';
+import { formatLabels, formatSeriesValue, getSeriesLabels, getSeriesName, getSeriesValue, isEmptySeries } from './util';
 
 interface ExpressionProps {
   isAlertCondition?: boolean;
@@ -132,7 +132,7 @@ export const Expression: FC<ExpressionProps> = ({
           );
 
         case ExpressionQueryType.sql:
-          return <SqlExpr onChange={onChangeQuery} query={query} refIds={availableRefIds} />;
+          return <SqlExpr onChange={(query) => onChangeQuery(query)} query={query} refIds={availableRefIds} alerting />;
 
         default:
           return <>Expression not supported: {query.type}</>;
@@ -438,7 +438,7 @@ function FrameRow({ frame, index, isAlertCondition, isRecordingRule }: FrameProp
             )}
           </Text>
         </div>
-        <div className={styles.expression.resultValue}>{value}</div>
+        <div className={styles.expression.resultValue}>{formatSeriesValue(value)}</div>
         {shouldRenderSumary && (
           <>
             {showFiring && <AlertStateTag state={PromAlertingRuleState.Firing} size="sm" />}
